@@ -1,14 +1,16 @@
 // server/src/routes/index.js
-
 const express = require('express');
+const userController = require('../controllers/userController');
 const restaurantController = require('../controllers/restaurantController');
+const reservationController = require('../controllers/reservationController');
+const authRoutes = require('./authRoutes');
+const { authenticateToken } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.get('/restaurants', restaurantController.getAllRestaurants);
-router.get('/restaurants/:id', restaurantController.getRestaurant);
-router.post('/restaurants', restaurantController.createRestaurant);
-router.put('/restaurants/:id', restaurantController.updateRestaurant);
-router.delete('/restaurants/:id', restaurantController.deleteRestaurant);
+router.use('/auth', authRoutes);
+router.use('/users', userController);
+router.use('/restaurants', restaurantController);
+router.use('/reservations', authenticateToken, reservationController);
 
 module.exports = router;
