@@ -1,9 +1,7 @@
-// client/src/pages/RestaurantList.js
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import api from '../services/api';
-import '../styles/RestaurantList.css';
+import api from '../../services/api';
+import '../../styles/restaurants/RestaurantList.css';
 
 const RestaurantList = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -13,11 +11,7 @@ const RestaurantList = () => {
     const fetchRestaurants = async () => {
       try {
         const response = await api.fetchRestaurants();
-        if (Array.isArray(response.data)) {
-          setRestaurants(response.data);
-        } else {
-          throw new Error('Response data is not an array');
-        }
+        setRestaurants(response.data);
       } catch (error) {
         setError(error);
       }
@@ -29,7 +23,7 @@ const RestaurantList = () => {
   const handleDelete = async (id) => {
     try {
       await api.deleteRestaurant(id);
-      setRestaurants(restaurants.filter((restaurant) => restaurant.id !== id));
+      setRestaurants(restaurants.filter(restaurant => restaurant.id !== id));
     } catch (error) {
       console.error('Error deleting restaurant:', error);
     }
@@ -45,21 +39,22 @@ const RestaurantList = () => {
       <Link to="/restaurants/new" className="add-restaurant-button">
         Add New Restaurant
       </Link>
-      {Array.isArray(restaurants) && restaurants.length > 0 ? (
+      {restaurants.length > 0 ? (
         restaurants.map((restaurant) => (
           <div key={restaurant.id} className="restaurant-item">
             <h2 className="restaurant-name">{restaurant.name}</h2>
             <p className="restaurant-detail">Address: {restaurant.address}</p>
             <p className="restaurant-detail">Cuisine: {restaurant.cuisine}</p>
             <p className="restaurant-detail">Rating: {restaurant.rating}</p>
-            <div className="button-container">
-              <Link to={`/restaurants/${restaurant.id}/edit`} className="edit-button">
-                Edit
-              </Link>
-              <button onClick={() => handleDelete(restaurant.id)} className="delete-button">
-                Delete
-              </button>
-            </div>
+            <Link to={`/restaurants/${restaurant.id}/edit`} className="edit-button">
+              Edit
+            </Link>
+            <button
+              className="delete-button"
+              onClick={() => handleDelete(restaurant.id)}
+            >
+              Delete
+            </button>
           </div>
         ))
       ) : (
